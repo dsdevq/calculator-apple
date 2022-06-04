@@ -9,12 +9,9 @@
 
 .wrapper {
   padding-top: 20px;
-  width: 30%;
-  height: 600px;
-  margin: 0 auto;
 }
 .calculator__body {
-  width: 50%;
+  max-width: 300px;
   margin: 0 auto;
 }
 		
