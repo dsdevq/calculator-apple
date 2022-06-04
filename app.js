@@ -176,11 +176,13 @@ numbers.forEach(e => {
   e.addEventListener('click', () => {
     // TODO: handle
     if (
-      actions.isDivision || actions.isAdd || actions.isMult || actions.isSubtraction && 
+      // actions.isDivision || actions.isAdd || actions.isMult || actions.isSubtraction && 
       // Object.values(actions).includes(true) && 
       input.value === actions.array[0]
       ) {
       // !ДОДЕЛАТЬ через метод массива
+      console.log(input.value === actions.array[0])
+      console.log('working1')
       orangeButtons[0].classList.remove('active')
       orangeButtons[1].classList.remove('active')
       orangeButtons[2].classList.remove('active')
@@ -189,15 +191,20 @@ numbers.forEach(e => {
       input.value = e.innerText
     }
     else if (
-      actions.isDivision || actions.isAdd || actions.isMult || actions.isSubtraction 
+      // actions.isDivision || actions.isAdd || actions.isMult || actions.isSubtraction 
       // Object.values(actions).includes(true)
-      && input.value.length > 1) {
+      // && 
+      input.value.length > 1) {
+      console.log('working2')
       input.value += e.innerText
     }
     else if (input.value == 0 || input.value == 'NaN') {
       input.value = e.innerText
+      console.log('working3')
+
     }
     else {
+      console.log('working4')
       input.value += e.innerText
     } 
     
