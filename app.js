@@ -9,53 +9,40 @@ const zap = document.querySelector('.special-number')
 
 let actions = {
   array: [],
-  isDivision: false,
+  primaryAction: null,
+  somethingIsHappening: false,
+  value1: null,
+  value2: null,
 
-  division: (e1, e2) => {
+  '÷func': (e1, e2) => {
     return +e1/+e2
   },
 
-  isMult: false,
-
-  mult: (e1, e2) => {
+  '×func': (e1, e2) => {
     return +e1 * +e2
   },
 
-  isAdd: false, //$ '+'
-
-  add: (e1, e2) => {
+  '+func': (e1, e2) => {
     return +e1 + +e2
   },
 
-  isSub: false, //$ '-'
-
-  sub: (e1, e2) => {
+  '-func': (e1, e2) => {
     return +e1 - +e2
   },
-
   // allFunction(e1, e2, method) {
   //   return eval(+e1  +method  +e2)
   // }
 }
 
 // !ДОДЕЛАТЬ
-const functions = (key) => {
-   actions.array.push(input.value)
-   input.value = actions.allFunction(actions.array[0], actions.array[1], '-')
-   actions.array.length = 0
-  actions[key] = !actions[key]
+
+// ОПРЕДЕЛЯЕТ ВЫБРАННЫЙ МЕТОД "="
+const step4 = () => {
+  actions.value2 = input.value
+  input.value = actions.primaryAction(actions.value1, actions.value2)
+  actions.value1 = input.value
+  // $ меняет значение
 }
-
-const method = () => {
-  let values = Object.values(actions)
-  let indexNeed = values.indexOf(true)
-  let keys  = Object.keys(actions)[indexNeed]
-  //$ console.log(actions[keys] = !actions[keys]) меняет значение
-
-  return keys 
-}
-
-method()
 
 
 // AC
@@ -67,12 +54,7 @@ const ac = Array.from(greyButtons).filter((e) => {
 greyButtons.forEach(e => {
   if (e.innerText === 'AC') {
     e.addEventListener('click', () => {
-      input.value = '0'
-      orangeButtons[0].classList.remove('active')
-      orangeButtons[1].classList.remove('active')
-      orangeButtons[2].classList.remove('active')
-      orangeButtons[3].classList.remove('active')
-      orangeButtons[4].classList.remove('active')
+      clearAC(orangeButtons)
     })
   }
   else if (e.innerText === '+/-') {
@@ -89,78 +71,36 @@ greyButtons.forEach(e => {
 
 // TODO: check
 
+function step2(element) {
+  clearButtons(orangeButtons)
+  element.classList.add('active')
+  actions.value1 = input.value
+  actions.primaryAction = actions[`${element.innerText}func`]
+  actions.somethingIsHappening = !actions.somethingIsHappening
+  console.log(actions.somethingIsHappening)
+}
+
 orangeButtons.forEach(e => {
-  if (e.innerText === '×') {
-    e.addEventListener('click', () => {
-      e.classList.add('active')
-      let value1 = input.value
-      actions.array.push(value1)
-      actions.isMult = !actions.isMult
-    })
-  }
-
-  if (e.innerText === '-') {
-    e.addEventListener('click', () => {
-      e.classList.add('active')
-      let value1 = input.value
-      actions.array.push(value1)
-      actions.isDivision = !actions.isDivision
-    })
-  }
-
-  if (e.innerText === '+') {
-    e.addEventListener('click', () => {
-      e.classList.add('active')
-      let value1 = input.value
-      actions.array.push(value1)
-      actions.isAdd = !actions.isAdd
-    })
-  }
-
-  if (e.innerText === '÷') {
-    e.addEventListener('click', () => {
-      e.classList.add('active')
-      let value1 = input.value
-      actions.array.push(value1)
-      actions.isDivision = !actions.isDivision
-    })
-  }
-
-  if (e.innerText === '=') {
-    e.addEventListener('click', () => {
-      
-      // ! To do
-      // let key = method()
-
-      // functions(key)
-
-      if (actions.isDivision) {
-        actions.array.push(input.value)
-        input.value = actions.division(actions.array[0], actions.array[1])
-        actions.array.length = 0
-        actions.isDivision = !actions.isDivision
-      }
-      else if (actions.isAdd) {
-        actions.array.push(input.value)
-        input.value = actions.add(actions.array[0], actions.array[1])
-        actions.array.length = 0
-        actions.isAdd = !actions.isAdd
-      }
-      else if (actions.isMult) {
-        actions.array.push(input.value)
-        input.value = actions.mult(actions.array[0], actions.array[1])
-        actions.array.length = 0
-        actions.isMult = !actions.isMult
-      }
-      else if (actions.isSubtraction) {
-        actions.array.push(input.value)
-        input.value = actions.sub(actions.array[0], actions.array[1])
-        actions.array.length = 0
-        actions.isSubtraction = !actions.isSubtraction
-      }
-    })
-  }
+  e.innerText === '=' ? e.addEventListener('click', () => {
+      step4()
+  }) :  e.addEventListener('click', () => {
+      step2(e)
+  })
 })
+
+function clearAC(array) {
+  array.forEach(e => {
+    e.classList.remove('active')
+  })
+  input.value = '0'
+  actions.value1 = actions.value2 = null
+}
+
+function clearButtons(array) {
+  array.forEach(e => {
+    e.classList.remove('active')
+  })
+}
 
 const methodFunction = (method) => {
 
@@ -175,11 +115,7 @@ zap.addEventListener('click', () => {
 numbers.forEach(e => {
   e.addEventListener('click', () => {
     // TODO: handle
-    if (
-      // actions.isDivision || actions.isAdd || actions.isMult || actions.isSubtraction && 
-      // Object.values(actions).includes(true) && 
-      input.value === actions.array[0]
-      ) {
+    if (actions.somethingIsHappening) {
       // !ДОДЕЛАТЬ через метод массива
       console.log(input.value === actions.array[0])
       console.log('working1')
@@ -189,26 +125,13 @@ numbers.forEach(e => {
       orangeButtons[3].classList.remove('active')
       orangeButtons[4].classList.remove('active')
       input.value = e.innerText
+      actions.somethingIsHappening = !actions.somethingIsHappening
     }
-    else if (
-      // actions.isDivision || actions.isAdd || actions.isMult || actions.isSubtraction 
-      // Object.values(actions).includes(true)
-      // && 
-      input.value.length > 1) {
+    else if (input.value !== '0') {
       console.log('working2')
       input.value += e.innerText
     }
-    else if (input.value == 0 || input.value == 'NaN') {
-      input.value = e.innerText
-      console.log('working3')
-
-    }
-    else {
-      console.log('working4')
-      input.value += e.innerText
-    } 
-    
-    // input.value == 0 ? input.value = e.innerText : e.innerText == ',' ? input.value += e.innerText : input.value += e.innerText
+    else input.value = e.innerText
   })
 }) 
 
